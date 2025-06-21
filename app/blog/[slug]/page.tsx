@@ -6,22 +6,24 @@ import path from 'path';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 
-// [1] 静的パス生成
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-export async function generateStaticParams() {
+// ✅ 静的パス生成
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const filenames = fs.readdirSync(postsDirectory);
   return filenames.map((filename) => ({
     slug: filename.replace(/\.md$/, ''),
   }));
 }
 
-// [2] ページコンポーネント本体
-export default async function BlogPost({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// ✅ ページコンポーネント
+type BlogPostProps = {
+  params: {
+    slug: string;
+  };
+};
+
+export default async function BlogPost({ params }: BlogPostProps) {
   const post = await getPostData(params.slug);
 
   return (
