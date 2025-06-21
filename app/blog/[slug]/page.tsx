@@ -5,24 +5,17 @@ import fs from 'fs';
 import path from 'path';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
+import { notFound } from 'next/navigation';
 
-const postsDirectory = path.join(process.cwd(), 'posts');
-
-// ✅ generateStaticParams
-export async function generateStaticParams() {
-  const filenames = fs.readdirSync(postsDirectory);
-  return filenames.map((filename) => ({
-    slug: filename.replace(/\.md$/, ''),
-  }));
-}
-
-// ✅ ページ本体
+// ✅ 1. 型定義は明示的にしない or 明確に { params: { slug: string } } とする
 export default async function BlogPost({
   params,
 }: {
   params: { slug: string };
 }) {
   const post = await getPostData(params.slug);
+
+  if (!post) return notFound();
 
   return (
     <div style={{ padding: '2rem' }}>
@@ -33,4 +26,14 @@ export default async function BlogPost({
       </ReactMarkdown>
     </div>
   );
+}
+
+// ✅ 2. generateStaticParams をそのまま書く
+export async function generateStaticParams() {
+  const postsDirectory = path.join(process.cwd(), 'posts');
+  const filenames = fs.readdirSync(postsDirectory);
+
+  return filenames.map((filename) => ({
+    slug: filename.replace(/\.md$/, ''),
+  }));
 }
