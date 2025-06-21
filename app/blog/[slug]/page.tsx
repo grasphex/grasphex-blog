@@ -1,12 +1,14 @@
+// app/blog/[slug]/page.tsx
+
 import { getPostData } from '@/lib/getSinglePost';
 import fs from 'fs';
 import path from 'path';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 
+// [1] 静的パス生成
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-// ✅ 静的パス生成
 export async function generateStaticParams() {
   const filenames = fs.readdirSync(postsDirectory);
   return filenames.map((filename) => ({
@@ -14,9 +16,13 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ ページ本体（params を明示的に展開）
-export default function BlogPost({ params }: { params: { slug: string } }) {
-  const post = getPostData(params.slug);
+// [2] ページコンポーネント本体
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
+  const post = await getPostData(params.slug);
 
   return (
     <div style={{ padding: '2rem' }}>
