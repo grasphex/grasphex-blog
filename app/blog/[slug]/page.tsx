@@ -5,12 +5,11 @@ import fs from 'fs';
 import path from 'path';
 import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
-import { Metadata } from 'next';
 
-// ✅ Markdownファイルのあるディレクトリ
+// ✅ posts フォルダのパス
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-// ✅ 動的ルーティング用の静的パス生成
+// ✅ 静的パスを生成
 export async function generateStaticParams() {
   const filenames = fs.readdirSync(postsDirectory);
   return filenames.map((filename) => ({
@@ -18,12 +17,12 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ ページコンポーネント（正しい型付け）
-type Props = {
+// ✅ ページコンポーネント本体（params を直接 async に）
+export default async function BlogPost({
+  params,
+}: {
   params: { slug: string };
-};
-
-export default async function BlogPost({ params }: Props) {
+}) {
   const post = await getPostData(params.slug);
 
   return (
