@@ -8,22 +8,20 @@ import rehypeHighlight from 'rehype-highlight';
 
 const postsDirectory = path.join(process.cwd(), 'posts');
 
-// ✅ 静的パス生成
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+// ✅ generateStaticParams
+export async function generateStaticParams() {
   const filenames = fs.readdirSync(postsDirectory);
   return filenames.map((filename) => ({
     slug: filename.replace(/\.md$/, ''),
   }));
 }
 
-// ✅ ページコンポーネント
-type BlogPostProps = {
-  params: {
-    slug: string;
-  };
-};
-
-export default async function BlogPost({ params }: BlogPostProps) {
+// ✅ ページ本体
+export default async function BlogPost({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = await getPostData(params.slug);
 
   return (
