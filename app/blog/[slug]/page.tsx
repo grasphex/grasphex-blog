@@ -18,7 +18,7 @@ export async function generateStaticParams() {
 
 // ✅ [2] ページ本体
 export default async function BlogPost({ params }: { params: { slug: string } }) {
-  const post = getPostData(params.slug);
+  const post = await getPostData(params.slug);
 
   return (
     <div style={{ padding: '2rem' }}>
