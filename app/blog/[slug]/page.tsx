@@ -23,7 +23,7 @@ export default async function BlogPost({
 }: {
   params: { slug: string };
 }) {
-  const post = await getPostData(params.slug);
+  const post = getPostData(params.slug);
 
   return (
     <div style={{ padding: '2rem' }}>
