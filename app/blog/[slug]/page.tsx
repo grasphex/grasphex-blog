@@ -17,7 +17,15 @@ export async function generateStaticParams() {
 }
 
 // ✅ [2] ページ本体
-export default async function BlogPost({ params }: { params: { slug: string } }) {
+import { Metadata } from 'next';
+
+interface Props {
+  params: {
+    slug: string;
+  };
+}
+
+export default async function BlogPost({ params }: Props) {
   const post = await getPostData(params.slug);
 
   return (
@@ -30,3 +38,4 @@ export default async function BlogPost({ params }: { params: { slug: string } })
     </div>
   );
 }
+
