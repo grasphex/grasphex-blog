@@ -1,5 +1,3 @@
-// app/blog/[slug]/page.tsx
-
 import { getPostData } from '@/lib/getSinglePost';
 import fs from 'fs';
 import path from 'path';
@@ -7,13 +5,13 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import { notFound } from 'next/navigation';
 
-interface PageProps {
+interface BlogPostPageProps {
   params: {
     slug: string;
   };
 }
 
-export default async function BlogPost({ params }: PageProps) {
+export default async function BlogPost({ params }: BlogPostPageProps) {
   const post = await getPostData(params.slug);
 
   if (!post) return notFound();
@@ -29,7 +27,6 @@ export default async function BlogPost({ params }: PageProps) {
   );
 }
 
-// generateStaticParams も型注釈が必要
 export async function generateStaticParams(): Promise<
   { slug: string }[]
 > {
