@@ -5,8 +5,9 @@ import ReactMarkdown from 'react-markdown';
 import rehypeHighlight from 'rehype-highlight';
 import { notFound } from 'next/navigation';
 
-export default async function BlogPost({ params }: { params: any }) {
+export default async function BlogPost({ params }: any) {
   const post = await getPostData(params.slug);
+
 
   if (!post) return notFound();
 
