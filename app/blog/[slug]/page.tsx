@@ -4,11 +4,11 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<Array<{ slug: string }>> {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
     slug: post.slug,
-  })) as const; // ←←← ここがキモ！
+  }));
 }
 
 type Props = {
@@ -22,6 +22,7 @@ export default async function PostPage({ params }: Props) {
   const processedContent = await remark()
     .use(html)
     .process(post.content);
+
   const contentHtml = processedContent.toString();
 
   return (
