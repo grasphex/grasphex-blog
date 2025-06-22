@@ -1,19 +1,9 @@
-// app/blog/[slug]/page.tsx
-
 import { getSinglePost } from '../../../lib/getSinglePost';
 import { getSortedPostsData } from '../../../lib/getPosts';
 import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-// ✅ 型を next の PageProps に準拠させる
-interface PageProps {
-  params: {
-    slug: string;
-  };
-}
-
-// ✅ generateStaticParams（これは問題なし）
 export async function generateStaticParams() {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
@@ -21,8 +11,8 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ page 関数の引数に PageProps を明示的に指定
-export default async function PostPage({ params }: PageProps) {
+// 型定義は一切書かない！（Next.jsにまかせる）
+export default async function PostPage({ params }) {
   const post = getSinglePost(params.slug);
   if (!post) return notFound();
 
