@@ -6,18 +6,23 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+// ✅ 型を next の PageProps に準拠させる
+interface PageProps {
+  params: {
+    slug: string;
+  };
+}
+
+// ✅ generateStaticParams（これは問題なし）
+export async function generateStaticParams() {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-export default async function PostPage({
-  params,
-}: {
-  params: { slug: string };
-}) {
+// ✅ page 関数の引数に PageProps を明示的に指定
+export default async function PostPage({ params }: PageProps) {
   const post = getSinglePost(params.slug);
   if (!post) return notFound();
 
