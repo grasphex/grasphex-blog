@@ -4,14 +4,13 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-// ✅ Vercelのビルドエラーを回避するための明示的な型定義
 type Props = {
   params: { slug: string };
 };
