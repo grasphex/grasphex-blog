@@ -4,11 +4,11 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-export async function generateStaticParams(): Promise<{ slug: string }[]> {
+export async function generateStaticParams() {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
     slug: post.slug,
-  }));
+  })) as const; // ←←← ここがキモ！
 }
 
 type Props = {
