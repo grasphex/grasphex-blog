@@ -4,7 +4,6 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-// 静的パスを生成（SSGで使用）
 export async function generateStaticParams() {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
@@ -12,12 +11,12 @@ export async function generateStaticParams() {
   }));
 }
 
-// ✅ Vercel対応：params に型注釈を明示
-export default async function PostPage({
-  params,
-}: {
+// ✅ Vercelのビルドエラーを回避するための明示的な型定義
+type Props = {
   params: { slug: string };
-}) {
+};
+
+export default async function PostPage({ params }: Props) {
   const post = getSinglePost(params.slug);
   if (!post) return notFound();
 
