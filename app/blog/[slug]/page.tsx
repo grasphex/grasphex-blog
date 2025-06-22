@@ -6,16 +6,18 @@ import { notFound } from 'next/navigation';
 import { remark } from 'remark';
 import html from 'remark-html';
 
-// ✅ 型注釈を削除（Next.js 15 App Router対応）
-export async function generateStaticParams() {
+export async function generateStaticParams(): Promise<{ slug: string }[]> {
   const posts = getSortedPostsData();
   return posts.map((post) => ({
     slug: post.slug,
   }));
 }
 
-// ✅ 型注釈を外して型推論に任せる
-export default async function PostPage({ params }: { params: { slug: string } }) {
+export default async function PostPage({
+  params,
+}: {
+  params: { slug: string };
+}) {
   const post = getSinglePost(params.slug);
   if (!post) return notFound();
 
