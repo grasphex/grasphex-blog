@@ -1,34 +1,38 @@
-import { getPostData } from '@/lib/getSinglePost';
-import fs from 'fs';
-import path from 'path';
-import ReactMarkdown from 'react-markdown';
-import rehypeHighlight from 'rehype-highlight';
+// app/blog/[slug]/page.tsx
+
+import { getSinglePost } from '../../../lib/getSinglePost';
+import { getSortedPostsData } from '../../../lib/getPosts';
 import { notFound } from 'next/navigation';
+import { remark } from 'remark';
+import html from 'remark-html';
 
-export default async function BlogPost({ params }: any) {
-  const post = await getPostData(params.slug);
+type Props = {
+  params: {
+    slug: string;
+  };
+};
 
-
-  if (!post) return notFound();
-
-  return (
-    <div style={{ padding: '2rem' }}>
-      <h1>{post.title}</h1>
-      <p>{post.date}</p>
-      <ReactMarkdown rehypePlugins={[rehypeHighlight]}>
-        {post.content}
-      </ReactMarkdown>
-    </div>
-  );
+export async function generateStaticParams() {
+  const posts = getSortedPostsData();
+  return posts.map((post) => ({
+    slug: post.slug,
+  }));
 }
 
-export async function generateStaticParams(): Promise<
-  { slug: string }[]
-> {
-  const postsDirectory = path.join(process.cwd(), 'posts');
-  const filenames = fs.readdirSync(postsDirectory);
+export default async function PostPage({ params }: Props) {
+  const post = getSinglePost(params.slug);
+  if (!post) return notFound();
 
-  return filenames.map((filename) => ({
-    slug: filename.replace(/\.md$/, ''),
-  }));
+  const processedContent = await remark()
+    .use(html)
+    .process(post.content);
+  const contentHtml = processedContent.toString();
+
+  return (
+    <article className="prose mx-auto px-4 py-8">
+      <h1 className="text-3xl font-bold mb-2">{post.title}</h1>
+      <p className="text-sm text-gray-500 mb-6">{post.date}</p>
+      <div dangerouslySetInnerHTML={{ __html: contentHtml }} />
+    </article>
+  );
 }
